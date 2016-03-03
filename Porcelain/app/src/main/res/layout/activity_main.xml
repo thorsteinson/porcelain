@@ -21,6 +21,10 @@
 
         <!--MAP FRAGMENT-->
         <!-- This is the google map -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_weight="1"
@@ -29,11 +33,23 @@
             tools:context="edu.uw.amaralmunnthorsteinson.porcelain.MapsActivity"
             android:name="com.google.android.gms.maps.SupportMapFragment" />
 
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addButton"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@android:drawable/ic_input_add"
+            android:tint="@android:color/white"/>
+
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_weight="2"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
                 <!-- WILL SET PROGRAMMATICALLY -->
                 <TextView
                     android:layout_width="match_parent"
@@ -46,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/toiletDescription"
                     android:text="Test Text"/>
+
         </LinearLayout>
 
 
