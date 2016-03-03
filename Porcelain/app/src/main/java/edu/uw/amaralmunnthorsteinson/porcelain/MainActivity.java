@@ -1,13 +1,22 @@
 package edu.uw.amaralmunnthorsteinson.porcelain;
 
+import android.Manifest;
+import android.location.Location;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,11 +29,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity
+        implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     private GoogleMap mMap;
+    private boolean mFirstLoc = false;
 
     private final String TAG = "TEST";
+
+    // Google client instance
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +57,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Builds a new GoogleApiClient for dealing with everything
+        if(mGoogleApiClient == null) {
+            mGoogleApiClient =
+                    new GoogleApiClient.Builder(this)
+                            .addConnectionCallbacks(this)
+                            .addOnConnectionFailedListener(this)
+                            .addApi(LocationServices.API) //use location
+                            .build(); //build me the client already dammit!
+            mGoogleApiClient.connect();
+        }
     }
 
     // Testing method to make sure firebase works as expected
@@ -94,9 +120,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        // Get current location and move camera there
+        Location curLoc = getLocation(null);
+        if (curLoc != null) {
+            Log.v(TAG, "Adding initial marker");
+            LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLatitude());
+            mMap.addMarker(new MarkerOptions().position(curPos).title("You are here"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(curPos));
+        }
+    }
+
+    // Google API Connection
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    // Google API Connection
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    // Google API Connection
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        //when API has connected!
+        getLocation(null);
+
+        LocationRequest request = new LocationRequest();
+        request.setInterval(10000);
+        request.setFastestInterval(5000);
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, this);
+    }
+
+    /** Helper method for getting location **/
+    public Location getLocation(View v){
+        if(mGoogleApiClient != null) {
+            Log.v(TAG, "Got a location, returning it");
+            return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.v(TAG, "Location has changed!");
+        Location curLoc = getLocation(null);
+        LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
+
+        if (mFirstLoc) {
+            // Set the camera to something decent
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curPos, 15));
+            // Don't ever touch the camera again
+            mFirstLoc = false;
+        }
+
     }
 }
