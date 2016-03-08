@@ -10,6 +10,7 @@ import android.view.Window;
  * Created by iguest on 3/3/16.
  */
 public class SettingsActivity extends AppCompatActivity{
+
     public void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);

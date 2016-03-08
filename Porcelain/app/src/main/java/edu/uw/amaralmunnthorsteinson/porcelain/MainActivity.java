@@ -1,6 +1,5 @@
 package edu.uw.amaralmunnthorsteinson.porcelain;
 
-import android.Manifest;
 import android.content.Intent;
 import android.location.Location;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -28,9 +28,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         LocationListener {
 
     private GoogleMap mMap;
-    private boolean mFirstLoc = false;
+    private boolean mFirstLoc = true;
 
     private final String TAG = "TEST";
 
@@ -116,7 +114,6 @@ public class MainActivity extends AppCompatActivity
                 if (!addedData) {
                     addedData = true;
                     Map<String, Long> val = (HashMap<String, Long>) snapshot.getValue();
-                    Log.v(TAG, "" + val);
 
                     // This is a 'list' according to the firebase documentation
                     // Instead of using indices, we use unique ids so to allow multiple people
@@ -160,20 +157,7 @@ public class MainActivity extends AppCompatActivity
     // Google API Connection
     @Override
     public void onConnected(Bundle bundle) {
-
-    }
-
-    // Google API Connection
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    // Google API Connection
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        //when API has connected!
-        getLocation(null);
+        Log.v(TAG, "onConnected called");
 
         LocationRequest request = new LocationRequest();
         request.setInterval(10000);
@@ -181,6 +165,20 @@ public class MainActivity extends AppCompatActivity
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, this);
+    }
+
+    // Google API Connection
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.v(TAG, "onConnectedSuspended called");
+    }
+
+    // Google API Connection
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.v(TAG, "onConnectionFailed called");
+        //when API hasn't connected, make toast
+        Toast.makeText(this, "Uh oh! Can't connect to the API", Toast.LENGTH_LONG).show();
     }
 
     /** Helper method for getting location **/
@@ -197,8 +195,8 @@ public class MainActivity extends AppCompatActivity
         Log.v(TAG, "Location has changed!");
         Location curLoc = getLocation(null);
         LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
-
         if (mFirstLoc) {
+            Log.v(TAG, "Moving the camera");
             // Set the camera to something decent
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curPos, 15));
             // Don't ever touch the camera again
