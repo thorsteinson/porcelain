@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private boolean mFirstLoc = true;
+
+    // The marker that tracks the USER location
+    private Marker mLocationMarker;
 
     private final String TAG = "TEST";
 
@@ -192,15 +196,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.v(TAG, "Location has changed!");
         Location curLoc = getLocation(null);
         LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
         if (mFirstLoc) {
-            Log.v(TAG, "Moving the camera");
             // Set the camera to something decent
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curPos, 15));
             // Don't ever touch the camera again
             mFirstLoc = false;
+
+            // Add our initialMarker
+            Log.v(TAG, "Adding initial marker");
+            mLocationMarker = mMap.addMarker(new MarkerOptions().position(curPos));
+        } else {
+            // Update our position
+            mLocationMarker.setPosition(curPos);
         }
 
     }
