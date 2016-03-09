@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity
@@ -122,6 +123,9 @@ public class MainActivity extends AppCompatActivity
                     for(String s : val.keySet()){
                         HashMap h = val.get(s);
                         Log.v(TAG, "" + h.get("name"));
+                        HashMap<String, Double> coords = (HashMap)h.get("latLng");
+                        point = new LatLng(coords.get("latitude"), coords.get("longitude"));
+                        Log.v(TAG, "" + point);
                         Log.v(TAG, "" + h.get("latLng"));
                         Log.v(TAG, "" + h.get("rating"));
                         Log.v(TAG, "" + h.get("descr"));
