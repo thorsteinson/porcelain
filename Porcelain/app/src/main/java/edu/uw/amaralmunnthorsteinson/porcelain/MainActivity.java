@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private boolean mFirstLoc = true;
+    private HashMap<Marker, String> mMarkerMap = new HashMap<>();
 
     // The marker that tracks the USER location
     private Marker mLocationMarker;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Firebase setup
         Firebase.setAndroidContext(this);
@@ -97,6 +99,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void addPlace(){
+
+    }
+
     // Testing method to make sure firebase works as expected
     // and we can really read and write data
     void testFirebase() {
@@ -111,23 +117,22 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot snapshot) {
                 // Prevents infinite loop, we only want to change the data once
                 // Without this, as soon as a value changes, it would trigger another change
-                if (!addedData) {
-                    addedData = true;
                     Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
-                    
-                    LatLng point = new LatLng(-23,44.00);
-                    Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
+
+                    //LatLng point = new LatLng(-23,44.00);
+                    //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
                     //Log.v(TAG, "" + val);
                     for(String s : val.keySet()){
                         HashMap h = val.get(s);
                         Log.v(TAG, "" + h.get("name"));
                         HashMap<String, Double> coords = (HashMap)h.get("latLng");
-                        point = new LatLng(coords.get("latitude"), coords.get("longitude"));
-                        mMap.addMarker(new MarkerOptions().position(point));
+                        LatLng point = new LatLng(coords.get("latitude"), coords.get("longitude"));
+                        Marker mapPoint = mMap.addMarker(new MarkerOptions().position(point).title(s).snippet("" + h.get("name")));
                         Log.v(TAG, "" + point);
                         Log.v(TAG, "" + h.get("latLng"));
                         Log.v(TAG, "" + h.get("rating"));
                         Log.v(TAG, "" + h.get("descr"));
+                        mMarkerMap.put(mapPoint, s);
                     }
 
                     // This is a 'list' according to the firebase documentation
@@ -135,10 +140,9 @@ public class MainActivity extends AppCompatActivity
                     // to add data at the same time. Push() generates the UUID
                     //
                     // We then use a HashMap to represent the uuid, long tuple
-                    array.push().setValue(p);
+                    //array.push().setValue(p);
                     Log.v(TAG, "" + array);
                 }
-            }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -159,6 +163,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String guid = mMarkerMap.get(marker);
+                Log.v(TAG, guid);
+                return true;
+            }
+        });
         // run testFirebase, which should add a new child in our list
         testFirebase();
         // Get current location and move camera there
