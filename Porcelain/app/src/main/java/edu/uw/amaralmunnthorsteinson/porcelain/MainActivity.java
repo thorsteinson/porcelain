@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     private Marker mLocationMarker;
 
     private final String TAG = "TEST";
+    private final String INIT_MARKER_TITLE = "You are here!";
 
     // Google client instance
     GoogleApiClient mGoogleApiClient;
@@ -166,8 +167,12 @@ public class MainActivity extends AppCompatActivity
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                String guid = mMarkerMap.get(marker);
-                Log.v(TAG, guid);
+                // Don't do anything if the initial marker gets clicked
+                // Maybe there's a better way to filter this, but whatevs
+                if (!marker.getTitle().equals(INIT_MARKER_TITLE)) {
+                    String guid = mMarkerMap.get(marker);
+                    Log.v(TAG, guid);
+                }
                 return true;
             }
         });
@@ -231,7 +236,7 @@ public class MainActivity extends AppCompatActivity
 
             // Add our initialMarker
             Log.v(TAG, "Adding initial marker");
-            mLocationMarker = mMap.addMarker(new MarkerOptions().position(curPos));
+            mLocationMarker = mMap.addMarker(new MarkerOptions().position(curPos).title(INIT_MARKER_TITLE));
         } else {
             // Update our position
             mLocationMarker.setPosition(curPos);
