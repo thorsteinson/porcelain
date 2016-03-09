@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 
 public class AddToiletActivity extends AppCompatActivity {
 
@@ -25,15 +26,25 @@ public class AddToiletActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Add New Toilet");
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Make our add button visible
+        View addButton = findViewById(R.id.add_toilet_add_button);
+        addButton.setVisibility(View.VISIBLE);
+    }
+
     // This method when called will take all of the data in the various forms and submit it
     // to firebase. If everything goes successfully, it will should end the activity and give a
     // happy message
-    public void addToilet(View v) {
+    public void addToiletToFirebase(View v) {
+        Log.v(TAG, "We've clicked ZE BUTTON");
         // Look up all the data and make sure the forms are completed before continuing
 
         // Make a call to firebase and actually add our new toilet
 
         // Actually ends the activity
-        finish();
+        // finish();
     }
 }
