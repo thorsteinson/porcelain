@@ -1,6 +1,7 @@
 package edu.uw.amaralmunnthorsteinson.porcelain;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private boolean mFirstLoc = true;
     private HashMap<Marker, Place> mMarkerMap = new HashMap<>();
+    private BitmapDescriptor mToilet;
 
     // The marker that tracks the USER location
     private Marker mLocationMarker;
@@ -83,6 +87,8 @@ public class MainActivity extends AppCompatActivity
         }
         mtitleText = (TextView) findViewById(R.id.toiletTitle);
         mdescriptionText = (TextView) findViewById(R.id.toiletDescription);
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.toilet);
+        mToilet = icon;
     }
 
     @Override
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity
                         HashMap<String, Double> coords = (HashMap)h.get("latLng");
                         LatLng point = new LatLng((Double)coords.get("latitude"), (Double)coords.get("longitude"));
 
-                        Marker mapPoint = mMap.addMarker(new MarkerOptions().position(point).title(s).snippet("" + h.get("name")));
+                        Marker mapPoint = mMap.addMarker(new MarkerOptions().icon(mToilet).position(point).title(s).snippet("" + h.get("name")));
 
                         Place p = new Place((String)h.get("name"), point, ((Double)h.get("rating")).longValue(), (String)h.get("descr"), s);
                         mMarkerMap.put(mapPoint, p);
