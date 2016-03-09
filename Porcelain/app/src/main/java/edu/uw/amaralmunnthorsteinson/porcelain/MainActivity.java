@@ -108,8 +108,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void addPlace(){
-
+    // Called when we want to start an activity to add a new toilet to our dataset
+    public void addToilet(View v){
+        Intent addToiletIntent = new Intent(this, AddToiletActivity.class);
+        startActivity(addToiletIntent);
     }
 
     // Testing method to make sure firebase works as expected
