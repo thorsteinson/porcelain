@@ -8,14 +8,16 @@ import com.google.android.gms.maps.model.LatLng;
 public class Place {
     private String name;
     private LatLng loc;
-    private Double rating;
+    private Long rating;
     private String descr;
+    private String guid;
 
-    public Place(String n, LatLng ll, Double r, String d){
+    public Place(String n, LatLng ll, Long r, String d, String g){
         this.name = n;
         this.loc = ll;
         this.rating = r;
         this.descr = d;
+        this.guid = g;
     }
 
     public String getName(){
@@ -26,12 +28,14 @@ public class Place {
         return this.loc;
     }
 
-    public Double getRating(){
+    public Long getRating(){
         return this.rating;
     }
 
     public String getDescr(){
         return this.descr;
     }
+
+    public String getGuid() { return this.guid; }
 
 }

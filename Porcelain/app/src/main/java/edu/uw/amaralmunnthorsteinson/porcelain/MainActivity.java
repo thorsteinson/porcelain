@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -28,6 +29,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private boolean mFirstLoc = true;
-    private HashMap<Marker, String> mMarkerMap = new HashMap<>();
+    private HashMap<Marker, Place> mMarkerMap = new HashMap<>();
 
     // The marker that tracks the USER location
     private Marker mLocationMarker;
@@ -47,6 +50,9 @@ public class MainActivity extends AppCompatActivity
     private final String TAG = "TEST";
     private final String INIT_MARKER_TITLE = "You are here!";
 
+
+    private TextView mtitleText;
+    private TextView mdescriptionText;
     // Google client instance
     GoogleApiClient mGoogleApiClient;
 
@@ -75,6 +81,8 @@ public class MainActivity extends AppCompatActivity
                             .build(); //build me the client already dammit!
             mGoogleApiClient.connect();
         }
+        mtitleText = (TextView) findViewById(R.id.toiletTitle);
+        mdescriptionText = (TextView) findViewById(R.id.toiletDescription);
     }
 
     @Override
@@ -125,15 +133,13 @@ public class MainActivity extends AppCompatActivity
                     //Log.v(TAG, "" + val);
                     for(String s : val.keySet()){
                         HashMap h = val.get(s);
-                        Log.v(TAG, "" + h.get("name"));
                         HashMap<String, Double> coords = (HashMap)h.get("latLng");
-                        LatLng point = new LatLng(coords.get("latitude"), coords.get("longitude"));
+                        LatLng point = new LatLng((Double)coords.get("latitude"), (Double)coords.get("longitude"));
+
                         Marker mapPoint = mMap.addMarker(new MarkerOptions().position(point).title(s).snippet("" + h.get("name")));
-                        Log.v(TAG, "" + point);
-                        Log.v(TAG, "" + h.get("latLng"));
-                        Log.v(TAG, "" + h.get("rating"));
-                        Log.v(TAG, "" + h.get("descr"));
-                        mMarkerMap.put(mapPoint, s);
+
+                        Place p = new Place((String)h.get("name"), point, ((Double)h.get("rating")).longValue(), (String)h.get("descr"), s);
+                        mMarkerMap.put(mapPoint, p);
                     }
 
                     // This is a 'list' according to the firebase documentation
@@ -170,8 +176,9 @@ public class MainActivity extends AppCompatActivity
                 // Don't do anything if the initial marker gets clicked
                 // Maybe there's a better way to filter this, but whatevs
                 if (!marker.getTitle().equals(INIT_MARKER_TITLE)) {
-                    String guid = mMarkerMap.get(marker);
-                    Log.v(TAG, guid);
+                    Place pl = mMarkerMap.get(marker);
+                    mtitleText.setText(pl.getName());
+                    mdescriptionText.setText(pl.getDescr());
                 }
                 return true;
             }
