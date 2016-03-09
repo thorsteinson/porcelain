@@ -2,7 +2,6 @@ package edu.uw.amaralmunnthorsteinson.porcelain;
 
 import android.content.Intent;
 import android.location.Location;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -104,8 +104,6 @@ public class MainActivity extends AppCompatActivity
     void testFirebase() {
         Firebase rootRef = new Firebase("https://fiery-torch-3951.firebaseio.com/");
         final Firebase array = rootRef.child("testArray");
-        long maxVal;
-
         array.addValueEventListener(new ValueEventListener() {
             boolean addedData = false;
 
@@ -117,14 +115,25 @@ public class MainActivity extends AppCompatActivity
                 // Without this, as soon as a value changes, it would trigger another change
                 if (!addedData) {
                     addedData = true;
-                    Map<String, Long> val = (HashMap<String, Long>) snapshot.getValue();
+                    Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
+                    LatLng point = new LatLng(-23,44.00);
+                    Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
+                    //Log.v(TAG, "" + val);
+                    for(String s : val.keySet()){
+                        HashMap h = val.get(s);
+                        Log.v(TAG, "" + h.get("name"));
+                        Log.v(TAG, "" + h.get("latLng"));
+                        Log.v(TAG, "" + h.get("rating"));
+                        Log.v(TAG, "" + h.get("descr"));
+                    }
 
                     // This is a 'list' according to the firebase documentation
                     // Instead of using indices, we use unique ids so to allow multiple people
                     // to add data at the same time. Push() generates the UUID
                     //
                     // We then use a HashMap to represent the uuid, long tuple
-                    array.push().setValue(snapshot.getChildrenCount());
+                    array.push().setValue(p);
+                    Log.v(TAG, "" + array);
                 }
             }
 
