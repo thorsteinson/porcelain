@@ -40,12 +40,18 @@ public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    // Keys for passing data to the AddToilet activity
+    public static final String LONGITUDE = "longitude";
+    public static final String LATITUDE = "latitude";
+
     private GoogleMap mMap;
     private boolean mFirstLoc = true;
     private HashMap<Marker, Place> mMarkerMap = new HashMap<>();
 
     // The marker that tracks the USER location
     private Marker mLocationMarker;
+    // The latLng that represents the user's most current location
+    private LatLng mCurPos;
 
     private final String TAG = "TEST";
     private final String INIT_MARKER_TITLE = "You are here!";
@@ -110,8 +116,17 @@ public class MainActivity extends AppCompatActivity
 
     // Called when we want to start an activity to add a new toilet to our dataset
     public void addToilet(View v){
-        Intent addToiletIntent = new Intent(this, AddToiletActivity.class);
-        startActivity(addToiletIntent);
+        if (mCurPos != null) {
+            Intent addToiletIntent = new Intent(this, AddToiletActivity.class);
+            addToiletIntent.putExtra(LATITUDE, mCurPos.latitude);
+            addToiletIntent.putExtra(LONGITUDE, mCurPos.longitude);
+            startActivity(addToiletIntent);
+        } else {
+            // This means that the location for whatever reason is not available
+            // Inform user with TOAST
+            Toast.makeText(this, "Location currently unknown, try again in a few seconds", Toast.LENGTH_LONG)
+                .show();
+        }
     }
 
     // Testing method to make sure firebase works as expected
@@ -236,19 +251,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         Location curLoc = getLocation(null);
-        LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
+        mCurPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
         if (mFirstLoc) {
             // Set the camera to something decent
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curPos, 15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurPos, 15));
             // Don't ever touch the camera again
             mFirstLoc = false;
 
             // Add our initialMarker
             Log.v(TAG, "Adding initial marker");
-            mLocationMarker = mMap.addMarker(new MarkerOptions().position(curPos).title(INIT_MARKER_TITLE));
+            mLocationMarker = mMap.addMarker(new MarkerOptions().position(mCurPos).title(INIT_MARKER_TITLE));
         } else {
             // Update our position
-            mLocationMarker.setPosition(curPos);
+            mLocationMarker.setPosition(mCurPos);
         }
 
     }
