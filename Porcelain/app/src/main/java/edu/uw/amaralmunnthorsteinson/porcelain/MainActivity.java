@@ -56,9 +56,6 @@ public class MainActivity extends AppCompatActivity
         // Firebase setup
         Firebase.setAndroidContext(this);
 
-        // run testFirebase, which should add a new child in our list
-        testFirebase();
-
         // Maps
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -117,6 +114,7 @@ public class MainActivity extends AppCompatActivity
                 if (!addedData) {
                     addedData = true;
                     Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
+                    
                     LatLng point = new LatLng(-23,44.00);
                     Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
                     //Log.v(TAG, "" + val);
@@ -125,6 +123,7 @@ public class MainActivity extends AppCompatActivity
                         Log.v(TAG, "" + h.get("name"));
                         HashMap<String, Double> coords = (HashMap)h.get("latLng");
                         point = new LatLng(coords.get("latitude"), coords.get("longitude"));
+                        mMap.addMarker(new MarkerOptions().position(point));
                         Log.v(TAG, "" + point);
                         Log.v(TAG, "" + h.get("latLng"));
                         Log.v(TAG, "" + h.get("rating"));
@@ -160,7 +159,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        // run testFirebase, which should add a new child in our list
+        testFirebase();
         // Get current location and move camera there
         Location curLoc = getLocation(null);
         if (curLoc != null) {
