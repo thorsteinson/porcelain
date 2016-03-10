@@ -22,6 +22,8 @@ import java.util.HashMap;
  */
 public class ToiletDetail extends AppCompatActivity{
 
+    public Boolean mStartedReview = false;
+
     private String key;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +82,17 @@ public class ToiletDetail extends AppCompatActivity{
         Log.v("Detailed View", "Entered seeMore function");
         Intent seeToiletDetailIntent = new Intent(this, ReviewActivity.class);
         seeToiletDetailIntent.putExtra("GUID", key);
+
+        mStartedReview = true;
         startActivity(seeToiletDetailIntent);
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mStartedReview) {
+            finish();
+        }
+    }
 }

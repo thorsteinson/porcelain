@@ -164,7 +164,6 @@ class Toilet {
     public LatLng latLng;
     public Long rating;
     public String descr;
-    public String review;
     public Boolean isHandicapAccessible;
     public Boolean isGenderNeutral;
     public Boolean isFamilyFriendly;
