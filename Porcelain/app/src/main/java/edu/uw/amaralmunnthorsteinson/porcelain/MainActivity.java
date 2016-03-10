@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences sharedPref;
     private TextView mtitleText;
     private TextView mdescriptionText;
+    private ImageView mcleanStatus;
     // Google client instance
     GoogleApiClient mGoogleApiClient;
 
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity
         }
         mtitleText = (TextView) findViewById(R.id.toiletTitle);
         mdescriptionText = (TextView) findViewById(R.id.toiletDescription);
+        mcleanStatus = (ImageView) findViewById(R.id.cleaninessImage);
     }
 
     @Override
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity
     // and we can really read and write data
     void testFirebase() {
         Firebase rootRef = new Firebase("https://fiery-torch-3951.firebaseio.com/");
-        final Firebase array = rootRef.child("testArray");
+        final Firebase array = rootRef.child("toilets");
         array.addValueEventListener(new ValueEventListener() {
             boolean addedData = false;
 
@@ -148,63 +151,63 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot snapshot) {
                 // Prevents infinite loop, we only want to change the data once
                 // Without this, as soon as a value changes, it would trigger another change
-                    Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
+                Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
 
-                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.toilet);
-                    Bitmap smaller = Bitmap.createScaledBitmap(icon, icon.getWidth()/2, icon.getHeight()/2, false);
-                    BitmapDescriptor toil = BitmapDescriptorFactory.fromBitmap(smaller);
-                    //LatLng point = new LatLng(-23,44.00);
-                    //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
-                    //Log.v(TAG, "" + val);
-                    if (val != null) {
-                        for(String s : val.keySet()){
-                            HashMap h = val.get(s);
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.toilet);
+                Bitmap smaller = Bitmap.createScaledBitmap(icon, icon.getWidth() / 2, icon.getHeight() / 2, false);
+                BitmapDescriptor toil = BitmapDescriptorFactory.fromBitmap(smaller);
+                //LatLng point = new LatLng(-23,44.00);
+                //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
+                //Log.v(TAG, "" + val);
+                if (val != null) {
+                    for (String s : val.keySet()) {
+                        HashMap h = val.get(s);
 
-                            Log.d(TAG, "Added Marker To Map " + h.get("name"));
-                            HashMap<String, Double> coords = (HashMap) h.get("latLng");
-                            LatLng point = new LatLng((Double) coords.get("latitude"), (Double) coords.get("longitude"));
+                        Log.d(TAG, "Added Marker To Map " + h.get("name"));
+                        HashMap<String, Double> coords = (HashMap) h.get("latLng");
+                        LatLng point = new LatLng((Double) coords.get("latitude"), (Double) coords.get("longitude"));
 
-                            Marker mapPoint = mMap.addMarker(new MarkerOptions()
-                                    .position(point)
-                                    .title(s)
-                                    .snippet("" + h.get("name"))
-                                    .icon(toil));
+                        Marker mapPoint = mMap.addMarker(new MarkerOptions()
+                                .position(point)
+                                .title(s)
+                                .snippet("" + h.get("name"))
+                                .icon(toil));
 
-                            Place p = new Place((String) h.get("name"),
-                                    point,
-                                    (Long) h.get("rating"),
-                                    (String) h.get("descr"),
-                                    (Boolean) h.get("isFamilyFriendly"),
-                                    (Boolean) h.get("isGenderNeutral"),
-                                    (Boolean) h.get("isHandicapAccessible"), s);
+                        Place p = new Place((String) h.get("name"),
+                                point,
+                                (Long) h.get("rating"),
+                                (String) h.get("descr"),
+                                (Boolean) h.get("isFamilyFriendly"),
+                                (Boolean) h.get("isGenderNeutral"),
+                                (Boolean) h.get("isHandicapAccessible"), s);
 
-                            boolean familyFilter = sharedPref.getBoolean("pref_family", false);
-                            boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
-                            boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
-                            Log.d(TAG, "onDataCreate family" + familyFilter);
-                            Log.d(TAG, "onDataCreate gender" + genderFilter);
-                            Log.d(TAG, "onDataCreate handicap" + handicapFilter);
+                        boolean familyFilter = sharedPref.getBoolean("pref_family", false);
+                        boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
+                        boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
+                        Log.d(TAG, "onDataCreate family" + familyFilter);
+                        Log.d(TAG, "onDataCreate gender" + genderFilter);
+                        Log.d(TAG, "onDataCreate handicap" + handicapFilter);
 
-                            mapPoint.setVisible(true);
+                        mapPoint.setVisible(true);
 
-                            if(!((!familyFilter || (familyFilter && (Boolean) h.get("isFamilyFriendly")))
-                                    && (!genderFilter || (genderFilter && (Boolean) h.get("isGenderNeutral")))
-                                    && (!handicapFilter || (handicapFilter &&(Boolean) h.get("isHandicapAccessible"))))) {
-                                mapPoint.setVisible(false);
-                            }
-
-                            mMarkerMap.put(mapPoint, p);
+                        if (!((!familyFilter || (familyFilter && (Boolean) h.get("isFamilyFriendly")))
+                                && (!genderFilter || (genderFilter && (Boolean) h.get("isGenderNeutral")))
+                                && (!handicapFilter || (handicapFilter && (Boolean) h.get("isHandicapAccessible"))))) {
+                            mapPoint.setVisible(false);
                         }
 
-                        // This is a 'list' according to the firebase documentation
-                        // Instead of using indices, we use unique ids so to allow multiple people
-                        // to add data at the same time. Push() generates the UUID
-                        //
-                        // We then use a HashMap to represent the uuid, long tuple
-                        //array.push().setValue(p);
+                        mMarkerMap.put(mapPoint, p);
                     }
-                    Log.v(TAG, "" + array);
+
+                    // This is a 'list' according to the firebase documentation
+                    // Instead of using indices, we use unique ids so to allow multiple people
+                    // to add data at the same time. Push() generates the UUID
+                    //
+                    // We then use a HashMap to represent the uuid, long tuple
+                    //array.push().setValue(p);
                 }
+                Log.v(TAG, "" + array);
+            }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -257,6 +260,16 @@ public class MainActivity extends AppCompatActivity
                     Place pl = mMarkerMap.get(marker);
                     mtitleText.setText(pl.name);
                     mdescriptionText.setText(pl.descr);
+
+                    if(pl.rating < 2){
+                        mcleanStatus.setImageResource(R.mipmap.weepy_face);
+                    } else if(pl.rating < 3){
+                        mcleanStatus.setImageResource(R.mipmap.sad_face);
+                    } else if(pl.rating < 4){
+                        mcleanStatus.setImageResource(R.mipmap.neutral_face);
+                    } else {
+                        mcleanStatus.setImageResource(R.mipmap.happy_face);
+                    }
                 }
                 return true;
             }
@@ -288,7 +301,7 @@ public class MainActivity extends AppCompatActivity
 
     // Google API Connection
     @Override
-    public void onConnectionSuspended ( int i){
+    public void onConnectionSuspended(int i){
         Log.v(TAG, "onConnectedSuspended called");
     }
 
