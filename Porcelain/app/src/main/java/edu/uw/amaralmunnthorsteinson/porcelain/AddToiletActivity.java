@@ -131,7 +131,7 @@ public class AddToiletActivity extends AppCompatActivity {
 
     // Makes the addButton visible if all of the required attributes have been set
     public void updateAddButtonVisibility() {
-        if (mName != null && mRating != null && mNotes != "") {
+        if (mName != null && mRating != null && !mNotes.equals("")) {
             findViewById(R.id.add_toilet_add_button).setVisibility(View.VISIBLE);
         }
     }
