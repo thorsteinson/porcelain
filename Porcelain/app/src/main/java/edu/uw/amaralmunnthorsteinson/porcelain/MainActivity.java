@@ -108,7 +108,9 @@ public class MainActivity extends AppCompatActivity
                 Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
                 startActivity(i);
                 return true;
-
+            case R.id.action_center:
+                moveCamera();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -313,7 +315,8 @@ public class MainActivity extends AppCompatActivity
         mCurPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
         if (mFirstLoc) {
             // Set the camera to something decent
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurPos, 15));
+            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurPos, 15));
+            moveCamera();
             // Don't ever touch the camera again
             mFirstLoc = false;
 
@@ -325,5 +328,9 @@ public class MainActivity extends AppCompatActivity
             mLocationMarker.setPosition(mCurPos);
         }
 
+    }
+
+    public void moveCamera(){
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurPos, 15));
     }
 }
