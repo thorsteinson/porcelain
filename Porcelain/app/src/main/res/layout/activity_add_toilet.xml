@@ -73,9 +73,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hygiene Rating"/>
+            android:text="Cleanliness Rating"/>
         <RatingBar
-            android:id="@+id/add_toilet_hygiene_rating"
+            android:id="@+id/add_toilet_cleanliness_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:isIndicator="false"
