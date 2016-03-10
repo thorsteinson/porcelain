@@ -7,4 +7,9 @@
         android:title="settings"
         app:showAsAction="ifRoom"
         />
+    <item
+        android:id="@+id/action_center"
+        android:icon="@mipmap/ic_center_map"
+        android:title="center"
+        app:showAsAction="ifRoom"/>
 </menu>
