@@ -1,7 +1,9 @@
 package edu.uw.amaralmunnthorsteinson.porcelain;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import java.util.HashMap;
  */
 public class ToiletDetail extends AppCompatActivity{
 
+    private String key;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toilet_detail);
@@ -32,7 +36,7 @@ public class ToiletDetail extends AppCompatActivity{
         final TextView mDescription = (TextView) findViewById(R.id.toiletDetailDescription);
         final TextView mReview = (TextView) findViewById(R.id.toiletDetailReview);
 
-        String key = getIntent().getStringExtra("GUID");
+        key = getIntent().getStringExtra("GUID");
 
         Firebase rootRef = new Firebase(MainActivity.FIREBASE_URL);
         final Firebase bathroom = rootRef.child("testArray").child(key);
@@ -62,8 +66,6 @@ public class ToiletDetail extends AppCompatActivity{
                 mDescription.setText(description);
                 mReview.setText(review);
 
-
-
             }
 
             @Override
@@ -72,6 +74,13 @@ public class ToiletDetail extends AppCompatActivity{
         });
 
 
+    }
+
+    public void onClick(View v) {
+        Log.v("Detailed View", "Entered seeMore function");
+        Intent seeToiletDetailIntent = new Intent(this, ReviewActivity.class);
+        seeToiletDetailIntent.putExtra("GUID", key);
+        startActivity(seeToiletDetailIntent);
     }
 
 

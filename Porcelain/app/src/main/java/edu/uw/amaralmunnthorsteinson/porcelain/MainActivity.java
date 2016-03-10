@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity
             // This callback get's called when the data FIRST becomes available, and then
             // when it changes as well.
             public void onDataChange(DataSnapshot snapshot) {
+                Log.v(TAG, "Data change called");
                 // Prevents infinite loop, we only want to change the data once
                 // Without this, as soon as a value changes, it would trigger another change
                 Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity
                     for (String s : val.keySet()) {
                         HashMap h = val.get(s);
 
-                        Log.d(TAG, "Added Marker To Map " + h.get("name"));
+                        // Log.d(TAG, "Added Marker To Map " + h.get("name"));
                         HashMap<String, Double> coords = (HashMap) h.get("latLng");
                         LatLng point = new LatLng((Double) coords.get("latitude"), (Double) coords.get("longitude"));
 
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity
                                 .title(s)
                                 .snippet("" + h.get("name"))
                                 .icon(toil));
+
 
                         Place p = new Place((String) h.get("name"),
                                 point,
@@ -202,9 +204,6 @@ public class MainActivity extends AppCompatActivity
                         boolean familyFilter = sharedPref.getBoolean("pref_family", false);
                         boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
                         boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
-                        Log.d(TAG, "onDataCreate family" + familyFilter);
-                        Log.d(TAG, "onDataCreate gender" + genderFilter);
-                        Log.d(TAG, "onDataCreate handicap" + handicapFilter);
 
                         mapPoint.setVisible(true);
 
@@ -218,15 +217,14 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             }
-                    // This is a 'list' according to the firebase documentation
-                    // Instead of using indices, we use unique ids so to allow multiple people
-                    // to add data at the same time. Push() generates the UUID
-                    //
-                    // We then use a HashMap to represent the uuid, long tuple
-                    //array.push().setValue(p);
-                
-                //Log.v(TAG, "" + array);
+            // This is a 'list' according to the firebase documentation
+            // Instead of using indices, we use unique ids so to allow multiple people
+            // to add data at the same time. Push() generates the UUID
+            //
+            // We then use a HashMap to represent the uuid, long tuple
+            //array.push().setValue(p);
 
+            //Log.v(TAG, "" + array);
 
 
             @Override
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        for(Marker key : mMarkerMap.keySet()) {
+        /*for(Marker key : mMarkerMap.keySet()) {
             boolean familyFilter = sharedPref.getBoolean("pref_family", false);
             boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
             boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
@@ -259,7 +257,12 @@ public class MainActivity extends AppCompatActivity
                     && (Long.parseLong(ratingFilter) <= h.rating))) {
                 key.setVisible(false);
             }
+        }*/
+        Log.v(TAG, "Resume called");
+        if (mMap != null) {
+            mMap.clear();
         }
+        testFirebase();
     }
 
     /**
@@ -324,14 +327,14 @@ public class MainActivity extends AppCompatActivity
         LocationRequest request = new LocationRequest();
         request.setInterval(10000);
         request.setFastestInterval(5000);
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, this);
     }
 
     // Google API Connection
     @Override
-    public void onConnectionSuspended(int i){
+    public void onConnectionSuspended(int i) {
         Log.v(TAG, "onConnectedSuspended called");
     }
 
