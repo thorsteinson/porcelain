@@ -8,6 +8,7 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity
         }
         mtitleText = (TextView) findViewById(R.id.toiletTitle);
         mdescriptionText = (TextView) findViewById(R.id.toiletDescription);
-
         mShowDetailButton = (TextView) findViewById(R.id.seeMoreButton);
         mShowIntruction = (TextView) findViewById(R.id.instruction);
         mToiletGuid = "";
