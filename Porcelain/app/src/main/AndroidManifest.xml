@@ -50,6 +50,8 @@
         </activity>
         <activity android:name=".AddToiletActivity" >
         </activity>
+        <activity android:name=".ToiletDetail" >
+        </activity>
     </application>
 
 </manifest>

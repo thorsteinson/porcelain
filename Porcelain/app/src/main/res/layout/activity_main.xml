@@ -79,6 +79,7 @@
                     android:text="See More!"
                     android:textSize="30sp"
                     android:onClick="seeMore"
+                    android:clickable="true"
                     android:visibility="gone"/>
 
         </LinearLayout>
