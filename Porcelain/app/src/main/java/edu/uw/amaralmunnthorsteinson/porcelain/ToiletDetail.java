@@ -18,7 +18,12 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 
 /**
- * Created by iguest on 3/9/16.
+ * Created by Allison on 3/9/16.
+ *
+ * Loads the data of the currently selected restroom and displays
+ * that data on a new page
+ *
+ *
  */
 public class ToiletDetail extends AppCompatActivity{
 
@@ -30,6 +35,7 @@ public class ToiletDetail extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toilet_detail);
 
+        //load all views that need to be adjusted to fit data
         final TextView mTitle = (TextView) findViewById(R.id.detailTitle);
         final TextView mFamily = (TextView) findViewById(R.id.familyDetail);
         final TextView mGender = (TextView) findViewById(R.id.genderDetail);
@@ -38,8 +44,12 @@ public class ToiletDetail extends AppCompatActivity{
         final TextView mDescription = (TextView) findViewById(R.id.toiletDetailDescription);
         final TextView mReview = (TextView) findViewById(R.id.toiletDetailReview);
 
+        //grabs guid from selected restroom on main page, so we can access values
         key = getIntent().getStringExtra("GUID");
 
+        //Reads through restroom's data and sets all necessary fields to match that
+        //data. Does not show amenities that the restroom does not have, and shows
+        //its rating and most recent review
         Firebase rootRef = new Firebase(MainActivity.FIREBASE_URL);
         final Firebase bathroom = rootRef.child("testArray").child(key);
         bathroom.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -78,6 +88,8 @@ public class ToiletDetail extends AppCompatActivity{
 
     }
 
+    //Starts an activity to review an existing restroom, from that restrooms
+    //details page
     public void onClick(View v) {
         Log.v("Detailed View", "Entered seeMore function");
         Intent seeToiletDetailIntent = new Intent(this, ReviewActivity.class);
@@ -87,7 +99,8 @@ public class ToiletDetail extends AppCompatActivity{
         startActivity(seeToiletDetailIntent);
     }
 
-
+    //Once the user returns to this page from the createReview activity
+    //it immediately brings user to main page
     @Override
     protected void onResume() {
         super.onResume();

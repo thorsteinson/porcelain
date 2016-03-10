@@ -98,15 +98,20 @@ public class MainActivity extends AppCompatActivity
                             .build(); //build me the client already dammit!
             mGoogleApiClient.connect();
         }
+
+        //grabs varying data views
         mtitleText = (TextView) findViewById(R.id.toiletTitle);
         mdescriptionText = (TextView) findViewById(R.id.toiletDescription);
         mShowDetailButton = (TextView) findViewById(R.id.seeMoreButton);
         mShowIntruction = (TextView) findViewById(R.id.instruction);
+
+        //key for individual bathroom area
         mToiletGuid = "";
 
         mcleanStatus = (ImageView) findViewById(R.id.cleaninessImage);
     }
 
+    //creates custom menu bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -114,6 +119,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //sends user into settings activity, or refocuses the camera, as necessary
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -147,6 +153,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //Directs the user into a detailed view of each individual restroom
     public void seeMore(View v) {
         Log.v(TAG, "Entered seeMore function");
         Intent seeToiletDetailIntent = new Intent(this, ToiletDetail.class);
@@ -154,8 +161,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(seeToiletDetailIntent);
     }
 
-    // Testing method to make sure firebase works as expected
-    // and we can really read and write data
+    // Pulls firebase data down and updates page accordingly
     void testFirebase() {
         Firebase rootRef = new Firebase("https://fiery-torch-3951.firebaseio.com/");
         final Firebase array = rootRef.child("toilets");
@@ -206,8 +212,10 @@ public class MainActivity extends AppCompatActivity
                         boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
                         boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
 
+                        //sets all markers to 'visible' state, in case the filters have changed
                         mapPoint.setVisible(true);
 
+                        //sets all irrelevant data based off of filter and amenity settings
                         if (!((!familyFilter || (familyFilter && (Boolean) h.get("isFamilyFriendly")))
                                 && (!genderFilter || (genderFilter && (Boolean) h.get("isGenderNeutral")))
                                 && (!handicapFilter || (handicapFilter && (Boolean) h.get("isHandicapAccessible"))))) {
@@ -218,15 +226,6 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             }
-            // This is a 'list' according to the firebase documentation
-            // Instead of using indices, we use unique ids so to allow multiple people
-            // to add data at the same time. Push() generates the UUID
-            //
-            // We then use a HashMap to represent the uuid, long tuple
-            //array.push().setValue(p);
-
-            //Log.v(TAG, "" + array);
-
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -238,32 +237,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        /*for(Marker key : mMarkerMap.keySet()) {
-            boolean familyFilter = sharedPref.getBoolean("pref_family", false);
-            boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
-            boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
-            String ratingFilter = sharedPref.getString("rating_filter", "");
-
-            Log.d(TAG, "onResume familyFilter" + familyFilter);
-            Log.d(TAG, "onResume genderFilter" + genderFilter);
-            Log.d(TAG, "onResume handicap" + handicapFilter);
-
-            Place h = mMarkerMap.get(key);
-
-            key.setVisible(true);
-
-            if(!((!familyFilter || (familyFilter &&  h.isFamilyFriendly))
-                    && (!genderFilter || (genderFilter &&  h.isGenderNeutral))
-                    && (!handicapFilter || (handicapFilter && h.isHandicapAccessible))
-                    && (Long.parseLong(ratingFilter) <= h.rating))) {
-                key.setVisible(false);
-            }
-        }*/
         Log.v(TAG, "Resume called");
         if (mMap != null) {
             mMap.clear();
         }
         mFirstLoc = true;
+
+        //reloads all data, and readjusts filters as necessary
+        //especially important because the page must refresh after coming back
+        //from settings page
         testFirebase();
     }
 
@@ -276,53 +258,53 @@ public class MainActivity extends AppCompatActivity
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @Override
+    public void onMapReady (GoogleMap googleMap){
+        mMap = googleMap;
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
         @Override
-        public void onMapReady (GoogleMap googleMap){
-            mMap = googleMap;
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                // Don't do anything if the initial marker gets clicked
-                // Maybe there's a better way to filter this, but whatevs
-                if (!marker.getTitle().equals(INIT_MARKER_TITLE)) {
-                    Place pl = mMarkerMap.get(marker);
-                    mtitleText.setText(pl.name);
-                    mdescriptionText.setText(pl.descr);
+        public boolean onMarkerClick(Marker marker) {
+            // Don't do anything if the initial marker gets clicked
+            // Maybe there's a better way to filter this, but whatevs
+            if (!marker.getTitle().equals(INIT_MARKER_TITLE)) {
+                Place pl = mMarkerMap.get(marker);
+                mtitleText.setText(pl.name);
+                mdescriptionText.setText(pl.descr);
 
-                    mToiletGuid = pl.guid;
-                    //TODO: only really need to do these four things once, could test
-                    mtitleText.setVisibility(TextView.VISIBLE);
-                    mdescriptionText.setVisibility(TextView.VISIBLE);
-                    mShowDetailButton.setVisibility(TextView.VISIBLE);
-                    mShowIntruction.setVisibility(TextView.GONE);
+                mToiletGuid = pl.guid;
 
-                    if(pl.rating < 2){
-                        mcleanStatus.setImageResource(R.mipmap.weepy_face);
-                    } else if(pl.rating < 3){
-                        mcleanStatus.setImageResource(R.mipmap.sad_face);
-                    } else if(pl.rating < 4){
-                        mcleanStatus.setImageResource(R.mipmap.neutral_face);
-                    } else {
-                        mcleanStatus.setImageResource(R.mipmap.happy_face);
-                    }
+                mtitleText.setVisibility(TextView.VISIBLE);
+                mdescriptionText.setVisibility(TextView.VISIBLE);
+                mShowDetailButton.setVisibility(TextView.VISIBLE);
+                mShowIntruction.setVisibility(TextView.GONE);
+
+                if(pl.rating < 2){
+                    mcleanStatus.setImageResource(R.mipmap.weepy_face);
+                } else if(pl.rating < 3){
+                    mcleanStatus.setImageResource(R.mipmap.sad_face);
+                } else if(pl.rating < 4){
+                    mcleanStatus.setImageResource(R.mipmap.neutral_face);
+                } else {
+                    mcleanStatus.setImageResource(R.mipmap.happy_face);
                 }
-                return true;
             }
-        });
-        // run testFirebase, which should add a new child in our list
-        testFirebase();
-        // Get current location and move camera there
-        Location curLoc = getLocation(null);
-        if (curLoc != null) {
-            Log.v(TAG, "Adding initial marker");
-            LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLatitude());
-            mMap.addMarker(new MarkerOptions().position(curPos).title("You are here"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(curPos));
+            return true;
         }
-        }
+    });
+    // run testFirebase, which should add a new child in our list
+    testFirebase();
+    // Get current location and move camera there
+    Location curLoc = getLocation(null);
+    if (curLoc != null) {
+        Log.v(TAG, "Adding initial marker");
+        LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLatitude());
+        mMap.addMarker(new MarkerOptions().position(curPos).title("You are here"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(curPos));
+    }
+    }
 
-        // Google API Connection
-        @Override
+    // Google API Connection
+    @Override
     public void onConnected(Bundle bundle) {
         Log.v(TAG, "onConnected called");
 
@@ -357,6 +339,7 @@ public class MainActivity extends AppCompatActivity
         return null;
     }
 
+    //Called every time location is changed
     @Override
     public void onLocationChanged(Location location) {
         Location curLoc = getLocation(null);
