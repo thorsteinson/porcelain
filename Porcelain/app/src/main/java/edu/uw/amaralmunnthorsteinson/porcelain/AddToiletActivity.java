@@ -168,7 +168,6 @@ class Toilet {
     public Boolean isGenderNeutral;
     public Boolean isFamilyFriendly;
 
-
     public Toilet(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible){
         this.name = n;
         this.latLng = ll;

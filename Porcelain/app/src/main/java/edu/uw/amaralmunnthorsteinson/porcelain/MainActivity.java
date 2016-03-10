@@ -176,7 +176,8 @@ public class MainActivity extends AppCompatActivity
                                     (String) h.get("descr"),
                                     (Boolean) h.get("isFamilyFriendly"),
                                     (Boolean) h.get("isGenderNeutral"),
-                                    (Boolean) h.get("isHandicapAccessible"), s);
+                                    (Boolean) h.get("isHandicapAccessible"),
+                                    (String) h.get("review"), s);
 
                             boolean familyFilter = sharedPref.getBoolean("pref_family", false);
                             boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
