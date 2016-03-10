@@ -262,6 +262,7 @@ public class MainActivity extends AppCompatActivity
         if (mMap != null) {
             mMap.clear();
         }
+        mFirstLoc = true;
         testFirebase();
     }
 
