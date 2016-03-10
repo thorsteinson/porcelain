@@ -16,14 +16,19 @@ import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
+
 public class AddToiletActivity extends AppCompatActivity {
 
     private final String TAG = "AddToilet";
 
     // Represents the user's current location, and by extension the location of the new toilet
     // to be added
-    private Double latitude;
-    private Double longitude;
+    public LatLng mLocation;
 
     // Instance variables that come from our GUI
     // Optional
@@ -40,8 +45,9 @@ public class AddToiletActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_toilet);
 
-        latitude = getIntent().getDoubleExtra(MainActivity.LATITUDE, 0);
-        longitude = getIntent().getDoubleExtra(MainActivity.LONGITUDE, 0);
+        Double latitude = getIntent().getDoubleExtra(MainActivity.LATITUDE, 0);
+        Double longitude = getIntent().getDoubleExtra(MainActivity.LONGITUDE, 0);
+        mLocation = new LatLng(latitude, longitude);
 
         getSupportActionBar().setTitle("Add New Toilet");
         registerListeners();
@@ -134,11 +140,42 @@ public class AddToiletActivity extends AppCompatActivity {
     // to firebase. If everything goes successfully, it will should end the activity and give a
     // happy message
     public void addToiletToFirebase(View v) {
-        // Look up all the data and make sure the forms are completed before continuing
+        // Look up all the data: Assumes that no values are NULL
+        Firebase rootRef = new Firebase(MainActivity.FIREBASE_URL);
+        final Firebase array = rootRef.child("testArray");
+        array.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Toilet t = new Toilet(mName, mLocation, mRating, mNotes, mFamilyFriendly, mGenderNeutral, mHandicapAccessible);
+                array.push().setValue(t);
+                // Actually ends the activity
+                finish();
+            }
 
-        // Make a call to firebase and actually add our new toilet
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+}
 
-        // Actually ends the activity
-         finish();
+class Toilet {
+    public String name;
+    public LatLng latLng;
+    public Long rating;
+    public String descr;
+    public Boolean isHandicapAccessible;
+    public Boolean isGenderNeutral;
+    public Boolean isFamilyFriendly;
+
+
+    public Toilet(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible){
+        this.name = n;
+        this.latLng = ll;
+        this.rating = r;
+        this.descr = d;
+        this.isFamilyFriendly = isFamilyFriendly;
+        this.isGenderNeutral = isGenderNeutral;
+        this.isHandicapAccessible = isHandicapAccessible;
     }
 }

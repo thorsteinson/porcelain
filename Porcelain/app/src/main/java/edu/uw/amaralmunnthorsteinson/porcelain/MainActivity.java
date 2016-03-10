@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    public static final String FIREBASE_URL = "https://fiery-torch-3951.firebaseio.com/";
+
     // Keys for passing data to the AddToilet activity
     public static final String LONGITUDE = "longitude";
     public static final String LATITUDE = "latitude";
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity
             // This means that the location for whatever reason is not available
             // Inform user with TOAST
             Toast.makeText(this, "Location currently unknown, try again in a few seconds", Toast.LENGTH_LONG)
-                .show();
+                    .show();
         }
     }
 
@@ -148,23 +150,25 @@ public class MainActivity extends AppCompatActivity
                     //LatLng point = new LatLng(-23,44.00);
                     //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
                     //Log.v(TAG, "" + val);
-                    for(String s : val.keySet()){
-                        HashMap h = val.get(s);
-                        HashMap<String, Double> coords = (HashMap)h.get("latLng");
-                        LatLng point = new LatLng((Double)coords.get("latitude"), (Double)coords.get("longitude"));
+                    if (val != null) {
+                        for(String s : val.keySet()){
+                            HashMap h = val.get(s);
+                            HashMap<String, Double> coords = (HashMap)h.get("latLng");
+                            LatLng point = new LatLng((Double)coords.get("latitude"), (Double)coords.get("longitude"));
 
-                        Marker mapPoint = mMap.addMarker(new MarkerOptions().position(point).title(s).snippet("" + h.get("name")));
+                            Marker mapPoint = mMap.addMarker(new MarkerOptions().position(point).title(s).snippet("" + h.get("name")));
 
-                        Place p = new Place((String)h.get("name"), point, ((Double)h.get("rating")).longValue(), (String)h.get("descr"), s);
-                        mMarkerMap.put(mapPoint, p);
+                            Place p = new Place((String)h.get("name"), point, (Long) h.get("rating"), (String)h.get("descr"), s);
+                            mMarkerMap.put(mapPoint, p);
+                        }
+
+                        // This is a 'list' according to the firebase documentation
+                        // Instead of using indices, we use unique ids so to allow multiple people
+                        // to add data at the same time. Push() generates the UUID
+                        //
+                        // We then use a HashMap to represent the uuid, long tuple
+                        //array.push().setValue(p);
                     }
-
-                    // This is a 'list' according to the firebase documentation
-                    // Instead of using indices, we use unique ids so to allow multiple people
-                    // to add data at the same time. Push() generates the UUID
-                    //
-                    // We then use a HashMap to represent the uuid, long tuple
-                    //array.push().setValue(p);
                     Log.v(TAG, "" + array);
                 }
 
