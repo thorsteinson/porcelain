@@ -51,7 +51,7 @@ public class AddToiletActivity extends AppCompatActivity {
 
         View parent = findViewById(android.R.id.content);
         setupUI(parent);
-        
+
         Double latitude = getIntent().getDoubleExtra(MainActivity.LATITUDE, 0);
         Double longitude = getIntent().getDoubleExtra(MainActivity.LONGITUDE, 0);
         mLocation = new LatLng(latitude, longitude);
