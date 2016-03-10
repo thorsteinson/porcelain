@@ -86,7 +86,7 @@
                     android:visibility="gone"
                     android:scrollbars="vertical"
                     android:maxLines="100"/>
-                <TextView
+                <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/seeMoreButton"

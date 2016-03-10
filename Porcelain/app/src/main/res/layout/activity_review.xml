@@ -68,7 +68,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="20dp"
         android:layout_marginRight="20dp"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@android:drawable/ic_menu_send"
         android:tint="@android:color/white"
         android:onClick="onClick"/>
 
