@@ -34,7 +34,9 @@
                 android:layout_alignParentRight="true"
                 android:src="@android:drawable/ic_input_add"
                 android:tint="@android:color/white"
-                android:onClick="addToilet"/>
+                android:onClick="addToilet"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"/>
 
         </RelativeLayout>
 

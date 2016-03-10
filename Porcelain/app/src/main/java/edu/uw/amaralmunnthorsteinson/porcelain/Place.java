@@ -22,6 +22,7 @@ public class Place {
         this.latLng = ll;
         this.rating = r;
         this.descr = d;
+        this.review = "  ";
         this.isFamilyFriendly = isFamilyFriendly;
         this.isGenderNeutral = isGenderNeutral;
         this.isHandicapAccessible = isHandicapAccessible;
