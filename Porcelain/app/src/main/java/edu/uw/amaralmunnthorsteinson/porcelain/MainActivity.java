@@ -158,7 +158,13 @@ public class MainActivity extends AppCompatActivity
 
                             Marker mapPoint = mMap.addMarker(new MarkerOptions().position(point).title(s).snippet("" + h.get("name")));
 
-                            Place p = new Place((String)h.get("name"), point, (Long) h.get("rating"), (String)h.get("descr"), s);
+                            Place p = new Place((String)h.get("name"),
+                                    point,
+                                    (Long) h.get("rating"),
+                                    (String)h.get("descr"),
+                                    (Boolean)h.get("isFamilyFriendly"),
+                                    (Boolean)h.get("isGenderNeutral"),
+                                    (Boolean)h.get("isHandicapAccessible"), s);
                             mMarkerMap.put(mapPoint, p);
                         }
 
@@ -198,8 +204,8 @@ public class MainActivity extends AppCompatActivity
                 // Maybe there's a better way to filter this, but whatevs
                 if (!marker.getTitle().equals(INIT_MARKER_TITLE)) {
                     Place pl = mMarkerMap.get(marker);
-                    mtitleText.setText(pl.getName());
-                    mdescriptionText.setText(pl.getDescr());
+                    mtitleText.setText(pl.name);
+                    mdescriptionText.setText(pl.descr);
                 }
                 return true;
             }
