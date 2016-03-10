@@ -17,7 +17,7 @@ public class Place {
     public String review;
     public String guid;
 
-    public Place(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible, String Review, String guid){
+    public Place(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible, String review, String guid){
         this.name = n;
         this.latLng = ll;
         this.rating = r;
@@ -26,6 +26,7 @@ public class Place {
         this.isFamilyFriendly = isFamilyFriendly;
         this.isGenderNeutral = isGenderNeutral;
         this.isHandicapAccessible = isHandicapAccessible;
+        this.review = review;
         this.guid = guid;
     }
 }

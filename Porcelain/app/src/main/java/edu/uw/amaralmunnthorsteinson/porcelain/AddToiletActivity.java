@@ -146,7 +146,7 @@ public class AddToiletActivity extends AppCompatActivity {
         array.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Toilet t = new Toilet(mName, mLocation, mRating, mNotes, mFamilyFriendly, mGenderNeutral, mHandicapAccessible);
+                Toilet t = new Toilet(mName, mLocation, mRating, mNotes, mFamilyFriendly, mGenderNeutral, mHandicapAccessible, "");
                 array.push().setValue(t);
                 // Actually ends the activity
                 finish();
@@ -168,8 +168,9 @@ class Toilet {
     public Boolean isHandicapAccessible;
     public Boolean isGenderNeutral;
     public Boolean isFamilyFriendly;
+    public String review;
 
-    public Toilet(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible){
+    public Toilet(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible, String review){
         this.name = n;
         this.latLng = ll;
         this.rating = r;
@@ -178,5 +179,6 @@ class Toilet {
         this.isFamilyFriendly = isFamilyFriendly;
         this.isGenderNeutral = isGenderNeutral;
         this.isHandicapAccessible = isHandicapAccessible;
+        this.review = review;
     }
 }
