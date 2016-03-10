@@ -1,9 +1,11 @@
 package edu.uw.amaralmunnthorsteinson.porcelain;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,7 +59,6 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = "TEST";
     private final String INIT_MARKER_TITLE = "You are here!";
-
 
     private TextView mtitleText;
     private TextView mdescriptionText;
