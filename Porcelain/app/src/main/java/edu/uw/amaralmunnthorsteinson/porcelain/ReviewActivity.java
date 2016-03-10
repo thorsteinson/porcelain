@@ -1,8 +1,12 @@
 package edu.uw.amaralmunnthorsteinson.porcelain;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -31,6 +35,8 @@ public class ReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
 
+        View parent = findViewById(android.R.id.content);
+        setupUI(parent);
 
         key = getIntent().getStringExtra("GUID");
 
@@ -61,5 +67,31 @@ public class ReviewActivity extends AppCompatActivity {
         ratingRef.setValue(ratingVal);
         reviewRef.setValue(reviewText.getText().toString());
         finish();
+    }
+
+    // find all instances of EditText Elements and add a touch listener to them.
+    public void setupUI(View view) {
+        if(!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(ReviewActivity.this);
+                    return false;
+                }
+            });
+        }
+
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
+    }
+
+    // takes an activity reference and removes focus from the keyboard
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

@@ -1,14 +1,18 @@
 package edu.uw.amaralmunnthorsteinson.porcelain;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -45,12 +49,16 @@ public class AddToiletActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_toilet);
 
+        View parent = findViewById(android.R.id.content);
+        setupUI(parent);
+        
         Double latitude = getIntent().getDoubleExtra(MainActivity.LATITUDE, 0);
         Double longitude = getIntent().getDoubleExtra(MainActivity.LONGITUDE, 0);
         mLocation = new LatLng(latitude, longitude);
 
         getSupportActionBar().setTitle("Add New Toilet");
         registerListeners();
+
     }
 
     // Registers all of the callbacks for our interface so we modify the proper instance variables
@@ -156,6 +164,32 @@ public class AddToiletActivity extends AppCompatActivity {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
+    }
+
+    // find all instances of EditText Elements and add a touch listener to them.
+    public void setupUI(View view) {
+        if(!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(AddToiletActivity.this);
+                    return false;
+                }
+            });
+        }
+
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
+    }
+
+    // takes an activity reference and removes focus from the keyboard
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 }
 
