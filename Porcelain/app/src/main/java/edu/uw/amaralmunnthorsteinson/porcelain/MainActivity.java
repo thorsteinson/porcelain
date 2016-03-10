@@ -3,6 +3,7 @@ package edu.uw.amaralmunnthorsteinson.porcelain;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private boolean mFirstLoc = true;
     private HashMap<Marker, Place> mMarkerMap = new HashMap<>();
-    private BitmapDescriptor mToilet;
 
     // The marker that tracks the USER location
     private Marker mLocationMarker;
@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity
         }
         mtitleText = (TextView) findViewById(R.id.toiletTitle);
         mdescriptionText = (TextView) findViewById(R.id.toiletDescription);
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.toilet);
-        mToilet = icon;
     }
 
     @Override
@@ -150,6 +148,9 @@ public class MainActivity extends AppCompatActivity
                 // Without this, as soon as a value changes, it would trigger another change
                     Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
 
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.toilet);
+                    Bitmap smaller = Bitmap.createScaledBitmap(icon, icon.getWidth()/2, icon.getHeight()/2, false);
+                    BitmapDescriptor toil = BitmapDescriptorFactory.fromBitmap(smaller);
                     //LatLng point = new LatLng(-23,44.00);
                     //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
                     //Log.v(TAG, "" + val);
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                                     .position(point)
                                     .title(s)
                                     .snippet("" + h.get("name"))
-                                    .icon(mToilet));
+                                    .icon(toil));
 
                             Place p = new Place((String)h.get("name"),
                                     point,
