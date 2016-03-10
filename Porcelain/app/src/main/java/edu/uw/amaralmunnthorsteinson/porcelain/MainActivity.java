@@ -34,16 +34,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
 
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+
+    public static final String FIREBASE_URL = "https://fiery-torch-3951.firebaseio.com/";
+
+    // Keys for passing data to the AddToilet activity
+    public static final String LONGITUDE = "longitude";
+    public static final String LATITUDE = "latitude";
 
     private GoogleMap mMap;
     private boolean mFirstLoc = true;
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity
 
     // The marker that tracks the USER location
     private Marker mLocationMarker;
+    // The latLng that represents the user's most current location
+    private LatLng mCurPos;
 
     private final String TAG = "TEST";
     private final String INIT_MARKER_TITLE = "You are here!";
@@ -115,8 +119,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void addPlace(){
-
+    // Called when we want to start an activity to add a new toilet to our dataset
+    public void addToilet(View v){
+        if (mCurPos != null) {
+            Intent addToiletIntent = new Intent(this, AddToiletActivity.class);
+            addToiletIntent.putExtra(LATITUDE, mCurPos.latitude);
+            addToiletIntent.putExtra(LONGITUDE, mCurPos.longitude);
+            startActivity(addToiletIntent);
+        } else {
+            // This means that the location for whatever reason is not available
+            // Inform user with TOAST
+            Toast.makeText(this, "Location currently unknown, try again in a few seconds", Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 
     // Testing method to make sure firebase works as expected
@@ -138,23 +153,35 @@ public class MainActivity extends AppCompatActivity
                     //LatLng point = new LatLng(-23,44.00);
                     //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
                     //Log.v(TAG, "" + val);
-                    for(String s : val.keySet()){
-                        HashMap h = val.get(s);
-                        HashMap<String, Double> coords = (HashMap)h.get("latLng");
-                        LatLng point = new LatLng((Double)coords.get("latitude"), (Double)coords.get("longitude"));
+                    if (val != null) {
+                        for(String s : val.keySet()){
+                            HashMap h = val.get(s);
+                            HashMap<String, Double> coords = (HashMap)h.get("latLng");
+                            LatLng point = new LatLng((Double)coords.get("latitude"), (Double)coords.get("longitude"));
 
-                        Marker mapPoint = mMap.addMarker(new MarkerOptions().icon(mToilet).position(point).title(s).snippet("" + h.get("name")));
+                            Marker mapPoint = mMap.addMarker(new MarkerOptions()
+                                    .position(point)
+                                    .title(s)
+                                    .snippet("" + h.get("name"))
+                                    .icon(mToilet));
 
-                        Place p = new Place((String)h.get("name"), point, ((Double)h.get("rating")).longValue(), (String)h.get("descr"), s);
-                        mMarkerMap.put(mapPoint, p);
+                            Place p = new Place((String)h.get("name"),
+                                    point,
+                                    (Long) h.get("rating"),
+                                    (String)h.get("descr"),
+                                    (Boolean)h.get("isFamilyFriendly"),
+                                    (Boolean)h.get("isGenderNeutral"),
+                                    (Boolean)h.get("isHandicapAccessible"), s);
+                            mMarkerMap.put(mapPoint, p);
+                        }
+
+                        // This is a 'list' according to the firebase documentation
+                        // Instead of using indices, we use unique ids so to allow multiple people
+                        // to add data at the same time. Push() generates the UUID
+                        //
+                        // We then use a HashMap to represent the uuid, long tuple
+                        //array.push().setValue(p);
                     }
-
-                    // This is a 'list' according to the firebase documentation
-                    // Instead of using indices, we use unique ids so to allow multiple people
-                    // to add data at the same time. Push() generates the UUID
-                    //
-                    // We then use a HashMap to represent the uuid, long tuple
-                    //array.push().setValue(p);
                     Log.v(TAG, "" + array);
                 }
 
@@ -184,8 +211,8 @@ public class MainActivity extends AppCompatActivity
                 // Maybe there's a better way to filter this, but whatevs
                 if (!marker.getTitle().equals(INIT_MARKER_TITLE)) {
                     Place pl = mMarkerMap.get(marker);
-                    mtitleText.setText(pl.getName());
-                    mdescriptionText.setText(pl.getDescr());
+                    mtitleText.setText(pl.name);
+                    mdescriptionText.setText(pl.descr);
                 }
                 return true;
             }
@@ -241,19 +268,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         Location curLoc = getLocation(null);
-        LatLng curPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
+        mCurPos = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
         if (mFirstLoc) {
             // Set the camera to something decent
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curPos, 15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurPos, 15));
             // Don't ever touch the camera again
             mFirstLoc = false;
 
             // Add our initialMarker
             Log.v(TAG, "Adding initial marker");
-            mLocationMarker = mMap.addMarker(new MarkerOptions().position(curPos).title(INIT_MARKER_TITLE));
+            mLocationMarker = mMap.addMarker(new MarkerOptions().position(mCurPos).title(INIT_MARKER_TITLE));
         } else {
             // Update our position
-            mLocationMarker.setPosition(curPos);
+            mLocationMarker.setPosition(mCurPos);
         }
 
     }
