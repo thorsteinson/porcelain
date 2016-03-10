@@ -10,9 +10,9 @@
 
     <string-array name="human_rating_pref_list">
         <item>1 star</item>
-        <item>2 star</item>
-        <item>3 star</item>
-        <item>4 star</item>
-        <item>5 star</item>
+        <item>2 stars</item>
+        <item>3 stars</item>
+        <item>4 stars</item>
+        <item>5 stars</item>
     </string-array>
 </resources>

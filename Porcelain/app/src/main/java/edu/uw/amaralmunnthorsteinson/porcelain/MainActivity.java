@@ -61,7 +61,10 @@ public class MainActivity extends AppCompatActivity
     private final String INIT_MARKER_TITLE = "You are here!";
     SharedPreferences sharedPref;
     private TextView mtitleText;
+    private String mToiletGuid;
+    private TextView mShowDetailButton;
     private TextView mdescriptionText;
+    private TextView mShowIntruction;
     // Google client instance
     GoogleApiClient mGoogleApiClient;
 
@@ -92,6 +95,10 @@ public class MainActivity extends AppCompatActivity
         }
         mtitleText = (TextView) findViewById(R.id.toiletTitle);
         mdescriptionText = (TextView) findViewById(R.id.toiletDescription);
+        mShowDetailButton = (TextView) findViewById(R.id.seeMoreButton);
+        mShowIntruction = (TextView) findViewById(R.id.instruction);
+        mToiletGuid = "";
+
     }
 
     @Override
@@ -132,6 +139,13 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "Location currently unknown, try again in a few seconds", Toast.LENGTH_LONG)
                     .show();
         }
+    }
+
+    public void seeMore(View v) {
+        Log.v(TAG, "Entered seeMore function");
+        Intent seeToiletDetailIntent = new Intent(this, ToiletDetail.class);
+        seeToiletDetailIntent.putExtra("GUID", mToiletGuid);
+        startActivity(seeToiletDetailIntent);
     }
 
     // Testing method to make sure firebase works as expected
@@ -220,6 +234,8 @@ public class MainActivity extends AppCompatActivity
             boolean familyFilter = sharedPref.getBoolean("pref_family", false);
             boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
             boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
+            String ratingFilter = sharedPref.getString("rating_filter", "");
+
             Log.d(TAG, "onResume familyFilter" + familyFilter);
             Log.d(TAG, "onResume genderFilter" + genderFilter);
             Log.d(TAG, "onResume handicap" + handicapFilter);
@@ -230,7 +246,8 @@ public class MainActivity extends AppCompatActivity
 
             if(!((!familyFilter || (familyFilter &&  h.isFamilyFriendly))
                     && (!genderFilter || (genderFilter &&  h.isGenderNeutral))
-                    && (!handicapFilter || (handicapFilter && h.isHandicapAccessible)))) {
+                    && (!handicapFilter || (handicapFilter && h.isHandicapAccessible))
+                    && (Long.parseLong(ratingFilter) <= h.rating))) {
                 key.setVisible(false);
             }
         }
@@ -257,6 +274,13 @@ public class MainActivity extends AppCompatActivity
                     Place pl = mMarkerMap.get(marker);
                     mtitleText.setText(pl.name);
                     mdescriptionText.setText(pl.descr);
+                    mToiletGuid = pl.guid;
+                    //TODO: only really need to do these four things once, could test
+                    mtitleText.setVisibility(TextView.VISIBLE);
+                    mdescriptionText.setVisibility(TextView.VISIBLE);
+                    mShowDetailButton.setVisibility(TextView.VISIBLE);
+                    mShowIntruction.setVisibility(TextView.GONE);
+
                 }
                 return true;
             }
@@ -288,7 +312,7 @@ public class MainActivity extends AppCompatActivity
 
     // Google API Connection
     @Override
-    public void onConnectionSuspended ( int i){
+    public void onConnectionSuspended ( int i) {
         Log.v(TAG, "onConnectedSuspended called");
     }
 

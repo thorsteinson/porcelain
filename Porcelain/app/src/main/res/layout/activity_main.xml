@@ -55,14 +55,31 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/instruction"
+                    android:text="Click a marker for information about that location!"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:id="@+id/toiletTitle"
-                    android:text="Test Text"/>
+                    android:text="Test Text"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/toiletDescription"
-                    android:text="Test Text"/>
+                    android:text="Test Text"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seeMoreButton"
+                    android:text="See More!"
+                    android:textSize="30sp"
+                    android:onClick="seeMore"
+                    android:visibility="gone"/>
 
         </LinearLayout>
 
