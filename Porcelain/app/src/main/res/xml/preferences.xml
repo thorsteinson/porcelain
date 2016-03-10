@@ -2,18 +2,33 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--Examples for  now-->
+
     <SwitchPreference
         android:key="auto_pref"
-        android:title="Auto-Reply Enabled"
+        android:title="Family-Friendly Restrooms"
         android:defaultValue="false"
-        android:summary="Enable auto-reply upon receiving text"/>
+        android:summary="Show only family-friendly restrooms"/>
 
-    <EditTextPreference
-        android:key="auto_text"
-        android:title="Auto-Reply Message"
-        android:summary="Set the message you will automatically send"
-        android:defaultValue="This is an auto-reply message"
+    <SwitchPreference
+        android:key="auto_pref"
+        android:title="Gender Neutral Restrooms"
+        android:defaultValue="false"
+        android:summary="Show only gender neutral restrooms"/>
+
+    <SwitchPreference
+        android:key="auto_pref"
+        android:title="Handicap Accessible Restrooms"
+        android:defaultValue="false"
+        android:summary="Show only handicap accessible restrooms"/>
+
+    <ListPreference
+        android:key="rating_filter"
+        android:title="Filter by Rating"
+        android:summary="Only show me restrooms above this rating:"
+        android:entries="@array/app_rating_pref_list"
+        android:entryValues="@array/human_rating_pref_list"
         />
+
 
 
 
