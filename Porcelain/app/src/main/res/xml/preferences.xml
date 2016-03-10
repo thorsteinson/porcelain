@@ -4,19 +4,19 @@
     <!--Examples for  now-->
 
     <SwitchPreference
-        android:key="auto_pref"
+        android:key="pref_family"
         android:title="Family-Friendly Restrooms"
         android:defaultValue="false"
         android:summary="Show only family-friendly restrooms"/>
 
     <SwitchPreference
-        android:key="auto_pref"
+        android:key="pref_gender"
         android:title="Gender Neutral Restrooms"
         android:defaultValue="false"
         android:summary="Show only gender neutral restrooms"/>
 
     <SwitchPreference
-        android:key="auto_pref"
+        android:key="pref_handicap"
         android:title="Handicap Accessible Restrooms"
         android:defaultValue="false"
         android:summary="Show only handicap accessible restrooms"/>

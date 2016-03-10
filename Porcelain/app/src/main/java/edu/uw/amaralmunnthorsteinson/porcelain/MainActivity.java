@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = "TEST";
     private final String INIT_MARKER_TITLE = "You are here!";
-
+    SharedPreferences sharedPref;
     private TextView mtitleText;
     private TextView mdescriptionText;
     // Google client instance
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         // Firebase setup
         Firebase.setAndroidContext(this);
@@ -157,8 +157,10 @@ public class MainActivity extends AppCompatActivity
                     if (val != null) {
                         for(String s : val.keySet()){
                             HashMap h = val.get(s);
-                            HashMap<String, Double> coords = (HashMap)h.get("latLng");
-                            LatLng point = new LatLng((Double)coords.get("latitude"), (Double)coords.get("longitude"));
+
+                            Log.d(TAG, "Added Marker To Map " + h.get("name"));
+                            HashMap<String, Double> coords = (HashMap) h.get("latLng");
+                            LatLng point = new LatLng((Double) coords.get("latitude"), (Double) coords.get("longitude"));
 
                             Marker mapPoint = mMap.addMarker(new MarkerOptions()
                                     .position(point)
@@ -166,13 +168,29 @@ public class MainActivity extends AppCompatActivity
                                     .snippet("" + h.get("name"))
                                     .icon(toil));
 
-                            Place p = new Place((String)h.get("name"),
+                            Place p = new Place((String) h.get("name"),
                                     point,
                                     (Long) h.get("rating"),
-                                    (String)h.get("descr"),
-                                    (Boolean)h.get("isFamilyFriendly"),
-                                    (Boolean)h.get("isGenderNeutral"),
-                                    (Boolean)h.get("isHandicapAccessible"), s);
+                                    (String) h.get("descr"),
+                                    (Boolean) h.get("isFamilyFriendly"),
+                                    (Boolean) h.get("isGenderNeutral"),
+                                    (Boolean) h.get("isHandicapAccessible"), s);
+
+                            boolean familyFilter = sharedPref.getBoolean("pref_family", false);
+                            boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
+                            boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
+                            Log.d(TAG, "onDataCreate family" + familyFilter);
+                            Log.d(TAG, "onDataCreate gender" + genderFilter);
+                            Log.d(TAG, "onDataCreate handicap" + handicapFilter);
+
+                            mapPoint.setVisible(true);
+
+                            if(!((!familyFilter || (familyFilter && (Boolean) h.get("isFamilyFriendly")))
+                                    && (!genderFilter || (genderFilter && (Boolean) h.get("isGenderNeutral")))
+                                    && (!handicapFilter || (handicapFilter &&(Boolean) h.get("isHandicapAccessible"))))) {
+                                mapPoint.setVisible(false);
+                            }
+
                             mMarkerMap.put(mapPoint, p);
                         }
 
@@ -193,6 +211,29 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        for(Marker key : mMarkerMap.keySet()) {
+            boolean familyFilter = sharedPref.getBoolean("pref_family", false);
+            boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
+            boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
+            Log.d(TAG, "onResume familyFilter" + familyFilter);
+            Log.d(TAG, "onResume genderFilter" + genderFilter);
+            Log.d(TAG, "onResume handicap" + handicapFilter);
+
+            Place h = mMarkerMap.get(key);
+
+            key.setVisible(true);
+
+            if(!((!familyFilter || (familyFilter &&  h.isFamilyFriendly))
+                    && (!genderFilter || (genderFilter &&  h.isGenderNeutral))
+                    && (!handicapFilter || (handicapFilter && h.isHandicapAccessible)))) {
+                key.setVisible(false);
+            }
+        }
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -202,10 +243,10 @@ public class MainActivity extends AppCompatActivity
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        @Override
+        public void onMapReady (GoogleMap googleMap){
+            mMap = googleMap;
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 // Don't do anything if the initial marker gets clicked
@@ -228,10 +269,10 @@ public class MainActivity extends AppCompatActivity
             mMap.addMarker(new MarkerOptions().position(curPos).title("You are here"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(curPos));
         }
-    }
+        }
 
-    // Google API Connection
-    @Override
+        // Google API Connection
+        @Override
     public void onConnected(Bundle bundle) {
         Log.v(TAG, "onConnected called");
 
@@ -245,7 +286,7 @@ public class MainActivity extends AppCompatActivity
 
     // Google API Connection
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended ( int i){
         Log.v(TAG, "onConnectedSuspended called");
     }
 
