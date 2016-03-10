@@ -38,6 +38,8 @@ public class ReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
 
+        getSupportActionBar().setTitle("New Review");
+
         View parent = findViewById(android.R.id.content);
         setupUI(parent);
 

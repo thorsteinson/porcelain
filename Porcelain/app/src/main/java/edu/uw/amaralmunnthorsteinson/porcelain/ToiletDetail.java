@@ -33,6 +33,9 @@ public class ToiletDetail extends AppCompatActivity{
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getSupportActionBar().setTitle("Restroom Details");
+
         setContentView(R.layout.activity_toilet_detail);
 
         //load all views that need to be adjusted to fit data
