@@ -370,7 +370,8 @@ public class MainActivity extends AppCompatActivity
 
             // Add our initialMarker
             Log.v(TAG, "Adding initial marker");
-            mLocationMarker = mMap.addMarker(new MarkerOptions().position(mCurPos).title(INIT_MARKER_TITLE));
+            mLocationMarker = mMap.addMarker(new MarkerOptions().position(mCurPos).title(INIT_MARKER_TITLE)
+                .icon(BitmapDescriptorFactory.defaultMarker(52.0f)).flat(true));
         } else {
             // Update our position
             mLocationMarker.setPosition(mCurPos);
