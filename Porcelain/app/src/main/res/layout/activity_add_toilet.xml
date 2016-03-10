@@ -119,7 +119,7 @@
         android:id="@+id/add_toilet_add_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@android:drawable/ic_menu_send"
         android:onClick="addToiletToFirebase"
         android:tint="@android:color/white" />
 </RelativeLayout>
