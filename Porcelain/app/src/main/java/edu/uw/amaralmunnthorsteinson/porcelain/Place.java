@@ -14,9 +14,10 @@ public class Place {
     public Boolean isHandicapAccessible;
     public Boolean isGenderNeutral;
     public Boolean isFamilyFriendly;
+    public String review;
     public String guid;
 
-    public Place(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible, String guid){
+    public Place(String n, LatLng ll, Long r, String d, Boolean isFamilyFriendly, Boolean isGenderNeutral, Boolean isHandicapAccessible, String Review, String guid){
         this.name = n;
         this.latLng = ll;
         this.rating = r;
