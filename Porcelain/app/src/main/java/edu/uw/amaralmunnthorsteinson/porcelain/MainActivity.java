@@ -211,6 +211,7 @@ public class MainActivity extends AppCompatActivity
                         boolean familyFilter = sharedPref.getBoolean("pref_family", false);
                         boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
                         boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
+                        String ratingFilter = sharedPref.getString("rating_filter", "");
 
                         //sets all markers to 'visible' state, in case the filters have changed
                         mapPoint.setVisible(true);
@@ -218,7 +219,8 @@ public class MainActivity extends AppCompatActivity
                         //sets all irrelevant data based off of filter and amenity settings
                         if (!((!familyFilter || (familyFilter && (Boolean) h.get("isFamilyFriendly")))
                                 && (!genderFilter || (genderFilter && (Boolean) h.get("isGenderNeutral")))
-                                && (!handicapFilter || (handicapFilter && (Boolean) h.get("isHandicapAccessible"))))) {
+                                && (!handicapFilter || (handicapFilter && (Boolean) h.get("isHandicapAccessible")))
+                                && (Long.parseLong(ratingFilter) <= (Long)h.get("rating")))) {
                             mapPoint.setVisible(false);
                         }
 
@@ -242,7 +244,11 @@ public class MainActivity extends AppCompatActivity
             mMap.clear();
         }
         mFirstLoc = true;
-
+        //reset info box
+        mShowIntruction.setVisibility(View.VISIBLE);
+        mcleanStatus.setVisibility(View.INVISIBLE);
+        mtitleText.setVisibility(View.INVISIBLE);
+        mdescriptionText.setVisibility(View.INVISIBLE);
         //reloads all data, and readjusts filters as necessary
         //especially important because the page must refresh after coming back
         //from settings page
@@ -277,6 +283,7 @@ public class MainActivity extends AppCompatActivity
                 mdescriptionText.setVisibility(TextView.VISIBLE);
                 mShowDetailButton.setVisibility(TextView.VISIBLE);
                 mShowIntruction.setVisibility(TextView.GONE);
+                mcleanStatus.setVisibility(ImageView.VISIBLE);
 
                 if(pl.rating < 2){
                     mcleanStatus.setImageResource(R.mipmap.weepy_face);
