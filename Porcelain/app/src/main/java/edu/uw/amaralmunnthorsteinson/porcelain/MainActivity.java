@@ -378,6 +378,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void moveCamera(){
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurPos, 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurPos, 18));
     }
 }
