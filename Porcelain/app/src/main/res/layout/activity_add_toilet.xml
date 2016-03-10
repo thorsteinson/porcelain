@@ -15,10 +15,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 android:text="Name:"/>
             <EditText
                 android:inputType="textCapWords"
@@ -28,15 +31,20 @@
         </LinearLayout>
 
         <TextView
+            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textStyle="bold"
             android:text="Amenities"/>
         <LinearLayout
+            android:layout_marginBottom="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="18dp"
                 android:text="Family Friendly:"/>
             <Switch
                 android:id="@+id/add_toilet_is_family_friendly"
@@ -45,11 +53,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginBottom="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="18dp"
                 android:text="Gender Neutral:"/>
             <Switch
                 android:id="@+id/add_toilet_is_gender_neutral"
@@ -58,11 +68,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="18dp"
                 android:text="Handicap Accessible:"/>
             <Switch
                 android:id="@+id/add_toilet_is_handicap_accessible"
@@ -73,6 +85,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20dp"
             android:text="Cleanliness Rating"/>
         <RatingBar
             android:id="@+id/add_toilet_cleanliness_rating"
@@ -85,6 +99,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20dp"
             android:text="Notes:"/>
         <EditText
             android:inputType="textMultiLine"
@@ -95,6 +111,8 @@
 
 
     <android.support.design.widget.FloatingActionButton
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"

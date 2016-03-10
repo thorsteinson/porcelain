@@ -12,13 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <SearchView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchBar"
-            android:queryHint="Search by Location Name"
-            android:layout_alignParentLeft="true"/>
-
         <!--MAP FRAGMENT-->
         <!-- This is the google map -->
         <RelativeLayout
@@ -46,34 +39,53 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_weight="2"
-            android:orientation="vertical"
+            android:layout_weight="3"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            android:weightSum="1"
+            android:padding="5dp">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cleaninessImage"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1">
                 <!-- WILL SET PROGRAMMATICALLY -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/instruction"
-                    android:text="Click a marker for information about that location!"/>
+                    android:text="Click a marker for information about that location!"
+                    android:textSize="20sp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/toiletTitle"
                     android:text="Test Text"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/toiletDescription"
                     android:text="Test Text"
-                    android:visibility="gone"/>
-
+                    android:layout_margin="2sp"
+                    android:visibility="gone"
+                    android:scrollbars="vertical"
+                    android:maxLines="100"/>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/seeMoreButton"
                     android:text="See More!"
@@ -81,15 +93,8 @@
                     android:onClick="seeMore"
                     android:clickable="true"
                     android:visibility="gone"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/cleaninessImage"
-                    android:layout_gravity="center_horizontal" />
-
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
-
     </LinearLayout>
-
 </RelativeLayout>
