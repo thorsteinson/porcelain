@@ -44,11 +44,17 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".AddToiletActivity" >
+        <activity android:name=".AddToiletActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ToiletDetail" >
+        <activity android:name=".ToiletDetail"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ReviewActivity" >
+        <activity android:name=".ReviewActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
