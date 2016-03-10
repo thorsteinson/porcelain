@@ -151,52 +151,54 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot snapshot) {
                 // Prevents infinite loop, we only want to change the data once
                 // Without this, as soon as a value changes, it would trigger another change
-                Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
+                    Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
 
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.toilet);
-                Bitmap smaller = Bitmap.createScaledBitmap(icon, icon.getWidth() / 2, icon.getHeight() / 2, false);
-                BitmapDescriptor toil = BitmapDescriptorFactory.fromBitmap(smaller);
-                //LatLng point = new LatLng(-23,44.00);
-                //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
-                //Log.v(TAG, "" + val);
-                if (val != null) {
-                    for (String s : val.keySet()) {
-                        HashMap h = val.get(s);
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.toilet);
+                    Bitmap smaller = Bitmap.createScaledBitmap(icon, icon.getWidth()/2, icon.getHeight()/2, false);
+                    BitmapDescriptor toil = BitmapDescriptorFactory.fromBitmap(smaller);
+                    //LatLng point = new LatLng(-23,44.00);
+                    //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
+                    //Log.v(TAG, "" + val);
+                    if (val != null) {
+                        for(String s : val.keySet()) {
+                            HashMap h = val.get(s);
 
-                        Log.d(TAG, "Added Marker To Map " + h.get("name"));
-                        HashMap<String, Double> coords = (HashMap) h.get("latLng");
-                        LatLng point = new LatLng((Double) coords.get("latitude"), (Double) coords.get("longitude"));
+                            Log.d(TAG, "Added Marker To Map " + h.get("name"));
+                            HashMap<String, Double> coords = (HashMap) h.get("latLng");
+                            LatLng point = new LatLng((Double) coords.get("latitude"), (Double) coords.get("longitude"));
 
-                        Marker mapPoint = mMap.addMarker(new MarkerOptions()
-                                .position(point)
-                                .title(s)
-                                .snippet("" + h.get("name"))
-                                .icon(toil));
+                            Marker mapPoint = mMap.addMarker(new MarkerOptions()
+                                    .position(point)
+                                    .title(s)
+                                    .snippet("" + h.get("name"))
+                                    .icon(toil));
 
-                        Place p = new Place((String) h.get("name"),
-                                point,
-                                (Long) h.get("rating"),
-                                (String) h.get("descr"),
-                                (Boolean) h.get("isFamilyFriendly"),
-                                (Boolean) h.get("isGenderNeutral"),
-                                (Boolean) h.get("isHandicapAccessible"), s);
+                            Place p = new Place((String) h.get("name"),
+                                    point,
+                                    (Long) h.get("rating"),
+                                    (String) h.get("descr"),
+                                    (Boolean) h.get("isFamilyFriendly"),
+                                    (Boolean) h.get("isGenderNeutral"),
+                                    (Boolean) h.get("isHandicapAccessible"),
+                                    (String) h.get("review"), s);
 
-                        boolean familyFilter = sharedPref.getBoolean("pref_family", false);
-                        boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
-                        boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
-                        Log.d(TAG, "onDataCreate family" + familyFilter);
-                        Log.d(TAG, "onDataCreate gender" + genderFilter);
-                        Log.d(TAG, "onDataCreate handicap" + handicapFilter);
+                            boolean familyFilter = sharedPref.getBoolean("pref_family", false);
+                            boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
+                            boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
+                            Log.d(TAG, "onDataCreate family" + familyFilter);
+                            Log.d(TAG, "onDataCreate gender" + genderFilter);
+                            Log.d(TAG, "onDataCreate handicap" + handicapFilter);
 
-                        mapPoint.setVisible(true);
+                            mapPoint.setVisible(true);
 
-                        if (!((!familyFilter || (familyFilter && (Boolean) h.get("isFamilyFriendly")))
-                                && (!genderFilter || (genderFilter && (Boolean) h.get("isGenderNeutral")))
-                                && (!handicapFilter || (handicapFilter && (Boolean) h.get("isHandicapAccessible"))))) {
-                            mapPoint.setVisible(false);
+                            if (!((!familyFilter || (familyFilter && (Boolean) h.get("isFamilyFriendly")))
+                                    && (!genderFilter || (genderFilter && (Boolean) h.get("isGenderNeutral")))
+                                    && (!handicapFilter || (handicapFilter && (Boolean) h.get("isHandicapAccessible"))))) {
+                                mapPoint.setVisible(false);
+                            }
+
+                            mMarkerMap.put(mapPoint, p);
                         }
-
-                        mMarkerMap.put(mapPoint, p);
                     }
 
                     // This is a 'list' according to the firebase documentation
