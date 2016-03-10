@@ -142,7 +142,7 @@ public class AddToiletActivity extends AppCompatActivity {
     public void addToiletToFirebase(View v) {
         // Look up all the data: Assumes that no values are NULL
         Firebase rootRef = new Firebase(MainActivity.FIREBASE_URL);
-        final Firebase array = rootRef.child("toilets");
+        final Firebase array = rootRef.child("testArray");
         array.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

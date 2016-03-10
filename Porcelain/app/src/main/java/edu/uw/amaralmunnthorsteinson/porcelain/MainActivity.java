@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity
     // and we can really read and write data
     void testFirebase() {
         Firebase rootRef = new Firebase("https://fiery-torch-3951.firebaseio.com/");
-        final Firebase array = rootRef.child("toilets");
+        final Firebase array = rootRef.child("testArray");
         array.addValueEventListener(new ValueEventListener() {
             boolean addedData = false;
 
