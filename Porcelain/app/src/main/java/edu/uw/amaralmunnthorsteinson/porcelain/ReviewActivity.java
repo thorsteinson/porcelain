@@ -53,7 +53,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         //grab the pieces of information from the Firebase
         Firebase rootRef = new Firebase(MainActivity.FIREBASE_URL);
-        final Firebase bathroom = rootRef.child("testArray").child(key);
+        final Firebase bathroom = rootRef.child("toilets").child(key);
         reviewRef = bathroom.child("review");
         ratingRef = bathroom.child("rating");
         bathroom.addListenerForSingleValueEvent(new ValueEventListener() {
