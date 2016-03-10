@@ -127,6 +127,4 @@
         android:tint="@android:color/white"
         android:onClick="onClick"/>
 
-    <!--android:onClick="addToiletToFirebase"-->
-
 </RelativeLayout>

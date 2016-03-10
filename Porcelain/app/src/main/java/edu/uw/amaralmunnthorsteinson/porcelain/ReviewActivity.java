@@ -19,7 +19,10 @@ import com.firebase.client.ValueEventListener;
 import java.util.HashMap;
 
 /**
- * Created by iguest on 3/10/16.
+ * Created by Allison on 3/10/16.
+ *
+ * Allows user to create a review of an existing restroom
+ * Updates the data in Firebase accordingly
  */
 public class ReviewActivity extends AppCompatActivity {
 
@@ -38,12 +41,15 @@ public class ReviewActivity extends AppCompatActivity {
         View parent = findViewById(android.R.id.content);
         setupUI(parent);
 
+        //grab this GUID from previous activity to use for searching the database
         key = getIntent().getStringExtra("GUID");
 
+        //grab views to change
         reviewTitle = (TextView) findViewById(R.id.reviewTitle);
         rating = (RatingBar) findViewById(R.id.reviewRating);
         reviewText = (EditText) findViewById(R.id.reviewText);
 
+        //grab the pieces of information from the Firebase
         Firebase rootRef = new Firebase(MainActivity.FIREBASE_URL);
         final Firebase bathroom = rootRef.child("testArray").child(key);
         reviewRef = bathroom.child("review");
@@ -52,6 +58,8 @@ public class ReviewActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, Object> fireToilet = (HashMap<String, Object>) dataSnapshot.getValue();
+
+                //changes the title, so the user understands what restroom they're reviewing
                 String title = (String) fireToilet.get("name");
                 reviewTitle.setText("Create a new review for " + title);
             }
@@ -62,6 +70,7 @@ public class ReviewActivity extends AppCompatActivity {
         });
     }
 
+    //submits rating
     public void onClick(View v) {
         long ratingVal = (long) rating.getRating();
         ratingRef.setValue(ratingVal);

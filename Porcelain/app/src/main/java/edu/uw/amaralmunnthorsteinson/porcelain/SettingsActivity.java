@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.Window;
 
 /**
- * Created by iguest on 3/3/16.
+ * Created by Allison on 3/3/16.
+ *
+ * Loads settings fragment to display app settings to user
  */
 public class SettingsActivity extends AppCompatActivity{
 
