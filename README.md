@@ -15,9 +15,10 @@ We would like to explicitly thank:
 
 These files are available from Flaticon.com for free.
 
+The Technology
+--------------
 
-
-
-User Stories
+This project uses the Android Mobile GPS, along with Google Location Service, Map Service to gather user data and provide data to be stored.
+Firebase is leveraged as our backend to persist data across multiple users and user sessions.
 
 
