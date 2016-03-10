@@ -172,8 +172,9 @@ public class MainActivity extends AppCompatActivity
                 Map<String, HashMap<String, Object>> val = (HashMap<String, HashMap<String, Object>>) snapshot.getValue();
 
                 Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.toilet);
-                Bitmap smaller = Bitmap.createScaledBitmap(icon, icon.getWidth() / 2, icon.getHeight() / 2, false);
+                Bitmap smaller = Bitmap.createScaledBitmap(icon, (icon.getWidth() / 4) * 3, (icon.getHeight() / 4) * 3, false);
                 BitmapDescriptor toil = BitmapDescriptorFactory.fromBitmap(smaller);
+
                 //LatLng point = new LatLng(-23,44.00);
                 //Place p = new Place("A Bathroom", point, 3.0, "A clean and safe environment");
                 //Log.v(TAG, "" + val);
