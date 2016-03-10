@@ -66,6 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/instruction"
+                    android:layout_marginTop="30dp"
                     android:text="Click a marker for information about that location!"
                     android:textSize="20sp"/>
 
@@ -86,6 +87,7 @@
                     android:visibility="gone"
                     android:scrollbars="vertical"
                     android:maxLines="100"/>
+
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
