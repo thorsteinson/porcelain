@@ -24,9 +24,10 @@
     <ListPreference
         android:key="rating_filter"
         android:title="Filter by Rating"
-        android:summary="Only show me restrooms above this rating:"
+        android:summary="Only show me restrooms above this rating: %s"
         android:entries="@array/app_rating_pref_list"
         android:entryValues="@array/human_rating_pref_list"
+        android:defaultValue="3"
         />
 
 

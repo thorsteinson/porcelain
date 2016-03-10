@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer-array name="app_rating_pref_list">
+    <string-array name="app_rating_pref_list">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
-    </integer-array>
+    </string-array>
 
     <string-array name="human_rating_pref_list">
         <item>1 star</item>
