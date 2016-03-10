@@ -59,7 +59,7 @@ public class ReviewActivity extends AppCompatActivity {
     public void onClick(View v) {
         long ratingVal = (long) rating.getRating();
         ratingRef.setValue(ratingVal);
-        reviewRef.setValue(reviewText.getText());
+        reviewRef.setValue(reviewText.getText().toString());
         finish();
     }
 }
