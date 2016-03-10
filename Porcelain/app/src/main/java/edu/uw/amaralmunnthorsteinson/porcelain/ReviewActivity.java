@@ -3,6 +3,8 @@ package edu.uw.amaralmunnthorsteinson.porcelain;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +44,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         View parent = findViewById(android.R.id.content);
         setupUI(parent);
-
+        registerListeners();
         //grab this GUID from previous activity to use for searching the database
         key = getIntent().getStringExtra("GUID");
 
@@ -78,6 +80,30 @@ public class ReviewActivity extends AppCompatActivity {
         ratingRef.setValue(ratingVal);
         reviewRef.setValue(reviewText.getText().toString());
         finish();
+    }
+    public void registerListeners() {
+        EditText reviewEditText = (EditText) findViewById(R.id.reviewText);
+        reviewEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateAddButtonVisibility();
+            }
+        });
+    }
+
+
+    public void updateAddButtonVisibility() {
+        if (rating != null && !reviewText.getText().toString().equals("")) {
+            findViewById(R.id.add_toilet_review_button).setVisibility(View.VISIBLE);
+        }
     }
 
     // find all instances of EditText Elements and add a touch listener to them.

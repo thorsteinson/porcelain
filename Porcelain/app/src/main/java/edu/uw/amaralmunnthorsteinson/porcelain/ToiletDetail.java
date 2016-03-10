@@ -54,7 +54,7 @@ public class ToiletDetail extends AppCompatActivity{
         //data. Does not show amenities that the restroom does not have, and shows
         //its rating and most recent review
         Firebase rootRef = new Firebase(MainActivity.FIREBASE_URL);
-        final Firebase bathroom = rootRef.child("testArray").child(key);
+        final Firebase bathroom = rootRef.child("toilets").child(key);
         bathroom.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
