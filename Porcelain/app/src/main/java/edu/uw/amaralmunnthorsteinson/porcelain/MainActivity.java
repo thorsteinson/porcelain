@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity
                         boolean familyFilter = sharedPref.getBoolean("pref_family", false);
                         boolean genderFilter = sharedPref.getBoolean("pref_gender", false);
                         boolean handicapFilter = sharedPref.getBoolean("pref_handicap", false);
-                        String ratingFilter = sharedPref.getString("rating_filter", "");
+                        String ratingFilter = sharedPref.getString("rating_filter", "3");
 
                         //sets all markers to 'visible' state, in case the filters have changed
                         mapPoint.setVisible(true);
